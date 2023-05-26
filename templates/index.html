@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT_supporter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', path='/main.css') }}" rel="stylesheet">
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            document.getElementById("form_main").addEventListener("submit", function (e) {
+                e.preventDefault()
+               var form_main = document.getElementById("form_main");
+               var query = document.getElementById("query").value;
+               var textarea = document.getElementById("output_field");
+               textarea.innerHTML = "Processing...";
+            fetch('/index/' + query, {
+                method: "POST",
+                })
+                .then(resp => resp.text())
+                .then(answer => {
+                    var text = answer.replace(/\\n/g, "");
+                    textarea.innerHTML = text;
+                    document.getElementById("form_main").reset();
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            });
+        });
+     </script>
+</head>
+<body>
+    <div class="container">
+        <div class="row height d-flex justify-content-center align-items-center">
+            <h1 id="header">Assistant</h1>
+            <!-- <textarea id=output_field class="form-control">{{ response.response }}</textarea> -->
+            <textarea id=output_field class="form-control" autocomplete="off" name="textOutput"></textarea>
+          <div class="col-md-8">
+            <form id="form_main" method="POST">
+                <div class="search">
+                <i class="fa fa-search"></i>
+                <input type="text" name="query" id="query" autocomplete="off" required="required" class="form-control" placeholder="Type your question">
+                <button type="submit" class="btn btn-primary">Answer</button>
+                </div>
+            </form>
+            
+          </div>
+          
+        </div>
+    </div>
+    
+</body>
+</html>
